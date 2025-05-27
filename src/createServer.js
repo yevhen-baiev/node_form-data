@@ -35,7 +35,15 @@ const requestHandler = (req, res) => {
       let expense;
 
       try {
-        expense = JSON.parse(body);
+        const contentType = req.headers['content-type'];
+
+        if (contentType.includes('application/json')) {
+          expense = JSON.parse(body);
+        } else {
+          const parsed = new URLSearchParams(body);
+
+          expense = Object.fromEntries(parsed.entries());
+        }
       } catch {
         res.statusCode = 400;
         res.end('Invalid JSON');
