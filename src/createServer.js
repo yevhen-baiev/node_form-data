@@ -32,7 +32,16 @@ const requestHandler = (req, res) => {
     });
 
     req.on('end', () => {
-      const expense = JSON.parse(body);
+      let expense;
+
+      try {
+        expense = JSON.parse(body);
+      } catch {
+        res.statusCode = 400;
+        res.end('Invalid JSON');
+
+        return;
+      }
 
       if (!expense.date || !expense.title || !expense.amount) {
         res.statusCode = 400;
